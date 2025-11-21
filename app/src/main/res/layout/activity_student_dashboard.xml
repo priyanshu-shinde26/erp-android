@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Student profile info -->
+        <TextView
+            android:id="@+id/infoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student info will appear here"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <!-- Attendance summary header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Attendance Summary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Summary content -->
+        <TextView
+            android:id="@+id/tvAttendanceSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading attendance summary..."
+            android:textSize="16sp"
+            android:paddingBottom="16dp" />
+
+        <!-- Attendance list header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Attendance Records"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp" />
+
+        <!-- List of records -->
+        <TextView
+            android:id="@+id/tvAttendanceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading attendance records..."
+            android:textSize="14sp"
+            android:paddingBottom="16dp"
+            android:typeface="monospace" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "156680917370",
+    "firebase_url": "https://campus-sync-firebase-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "campus-sync-firebase",
+    "storage_bucket": "campus-sync-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156680917370:android:a39ed5b5a582402af6c6c3",
+        "android_client_info": {
+          "package_name": "com.campussync.erp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2LsOL4zuMoBYx16fc_dUZz_J6VGVyjSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

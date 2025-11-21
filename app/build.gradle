@@ -1,0 +1,52 @@
+plugins {  // add this line (or use plugin block)
+
+    alias(libs.plugins.android.application)
+}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services' // add this line (or use plugin block)
+
+android {
+    namespace 'com.campussync.erp'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.campussync.erp"
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation libs.firebase.auth
+    implementation libs.firebase.database
+    implementation libs.activity.v191
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+// SLF4J API
+    implementation libs.slf4j.api
+// Android binding for SLF4J (recommended for Android apps)
+    implementation libs.slf4j.android
+    implementation libs.gson
+
+    implementation libs.okhttp
+}

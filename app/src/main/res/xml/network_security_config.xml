@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- allow emulator -> host (10.0.2.2) -->
+        <domain includeSubdomains="true">10.0.2.2:9090</domain>
+    </domain-config>
+
+    <!-- fallback to allowing cleartext for debug builds -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
