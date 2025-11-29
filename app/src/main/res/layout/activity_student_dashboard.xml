@@ -57,5 +57,21 @@
             android:textSize="14sp"
             android:paddingBottom="16dp"
             android:typeface="monospace" />
+
+        <!-- Button must be inside LinearLayout -->
+        <Button
+            android:id="@+id/btnViewTimetable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Timetable" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_assignments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Assignments"
+            android:layout_marginTop="16dp" />
+
     </LinearLayout>
+
 </ScrollView>

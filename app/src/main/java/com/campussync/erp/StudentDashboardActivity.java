@@ -1,13 +1,17 @@
 package com.campussync.erp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.campussync.erp.assignment.StudentAssignmentsActivity;
+import com.campussync.erp.timetable.StudentTimetableActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
@@ -33,7 +37,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     private TextView infoText;
     private TextView attendanceSummaryText;
     private TextView attendanceListText;
-
+    private Button btnAssignments;
     private FirebaseAuth mAuth;
     private OkHttpClient client;
 
@@ -41,6 +45,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_dashboard);
+
 
         infoText = findViewById(R.id.infoText);
         attendanceSummaryText = findViewById(R.id.tvAttendanceSummary);
@@ -81,7 +86,24 @@ public class StudentDashboardActivity extends AppCompatActivity {
                             attendanceSummaryText.setText("Failed to get token");
                             attendanceListText.setText("Failed to get token");
                         }
+                        Button btnViewTimetable = findViewById(R.id.btnViewTimetable);
+                        btnViewTimetable.setOnClickListener(v -> {
+                            Intent intent = new Intent(StudentDashboardActivity.this, StudentTimetableActivity.class);
+                            startActivity(intent);
+                        });
                     });
+            Button btnAssignments = findViewById(R.id.btn_assignments);
+            if (btnAssignments != null) {
+                btnAssignments.setOnClickListener(v -> {
+                    Intent i = new Intent(this, com.campussync.erp.assignment.StudentAssignmentsActivity.class);
+                    startActivity(i);
+                });
+            } else {
+                // Helpful log if something is wrong with the layout again
+                android.util.Log.e("StudentDashboard", "btn_assignments not found in layout");
+            }
+
+
         } else {
             Toast.makeText(this, "No logged-in user", Toast.LENGTH_SHORT).show();
             finish();

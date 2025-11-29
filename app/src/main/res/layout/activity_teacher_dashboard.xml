@@ -35,6 +35,19 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Class Timetable" />
-    -->
+    --><Button
+    android:id="@+id/btnManageTimetable"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Manage Timetable"
+    android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_assignments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Assignments"
+        android:layout_marginTop="16dp" />
+
 
 </LinearLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title" />
+
+        <EditText
+            android:id="@+id/et_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:layout_marginTop="8dp"
+            android:minLines="2"
+            android:maxLines="4" />
+
+        <EditText
+            android:id="@+id/et_class_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class ID (e.g. CSE-2)"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/et_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Subject (e.g. JAVA)"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/et_due_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Due date (dd/MM/yyyy)"
+            android:focusable="false"
+            android:clickable="true"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</ScrollView>

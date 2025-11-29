@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/spDayOfWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/days_of_week" />
+
+        <EditText
+            android:id="@+id/etStartTime"
+            android:hint="Start Time (09:00)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="time" />
+
+        <EditText
+            android:id="@+id/etEndTime"
+            android:hint="End Time (10:00)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="time" />
+
+        <EditText
+            android:id="@+id/etSubject"
+            android:hint="Subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etTeacher"
+            android:hint="Teacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etRoom"
+            android:hint="Room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>

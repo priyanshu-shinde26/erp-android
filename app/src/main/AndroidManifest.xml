@@ -17,7 +17,7 @@
         android:theme="@style/Theme.CampusSync"
         tools:targetApi="31">
 
-        <!-- Launcher / entry activity (always first) -->
+        <!-- Launcher / entry activity -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -42,11 +42,41 @@
             android:name=".TeacherDashboardActivity"
             android:exported="false" />
 
-        <!-- Attendance screens -->
+        <!-- Attendance / Timetable screens -->
         <activity
             android:name=".attendance.ManageAttendanceActivity"
             android:exported="false" />
+        <activity
+            android:name=".timetable.StudentTimetableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".timetable.ManageTimetableActivity"
+            android:exported="false" />
+
+        <!-- ================= ASSIGNMENT MODULE ACTIVITIES ================= -->
+
+        <!-- Student: view assignments (available/submitted/pending) -->
+        <activity
+            android:name=".assignment.StudentAssignmentsActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".assignment.TeacherAssignmentsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".assignment.AssignmentSubmissionsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".assignment.AdminAssignmentsActivity"
+            android:exported="false" />
+
+
+        <!-- ================================================================ -->
 
         <!-- Add any other activities here -->
+
     </application>
 </manifest>
