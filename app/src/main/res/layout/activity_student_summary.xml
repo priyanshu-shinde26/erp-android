@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ================= TITLE ================= -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Attendance"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <!-- ================= SUMMARY CARD ================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#E8F5E9"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attendance Percentage"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="6dp" />
+
+            <TextView
+                android:id="@+id/tvAttSummary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading..."
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32" />
+        </LinearLayout>
+
+        <!-- ================= DAY-WISE CONTAINER ================= -->
+
+        <LinearLayout
+            android:id="@+id/layoutDayWise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Day-wise Attendance"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvAttendanceList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading attendance..."
+                android:textSize="14sp"
+                android:typeface="monospace"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- ================= REFRESH BUTTON ================= -->
+
+        <Button
+            android:id="@+id/btnRefreshAttendance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Refresh Attendance"
+            android:layout_marginTop="20dp"
+            android:minHeight="48dp" />
+
+    </LinearLayout>
+
+</ScrollView>

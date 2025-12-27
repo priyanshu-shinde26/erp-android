@@ -57,13 +57,20 @@ public class BackendClient {
                 });
     }
 
-    public static void get(String urlPath, String idToken, Callback callback) {
+    public static void get(String endpoint, String token, Callback callback) {
         Request request = new Request.Builder()
-                .url(BASE_URL + urlPath)
-                .addHeader("Authorization", "Bearer " + idToken)
+                .url(BASE_URL + endpoint)
+                .addHeader("Authorization", "Bearer " + token)  // ✅ REQUIRED
+                .addHeader("Content-Type", "application/json")
                 .build();
+
         client.newCall(request).enqueue(callback);
     }
+
+    public static void getWithAuth(String endpoint, String token, Callback callback) {
+        get(endpoint, token, callback); // Same as get()
+    }
+
 
     public static void postJson(String urlPath, String idToken, String jsonBody, Callback callback) {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -77,4 +84,5 @@ public class BackendClient {
 
         client.newCall(request).enqueue(callback);
     }
+
 }

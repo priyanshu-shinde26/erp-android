@@ -47,6 +47,13 @@
             android:name=".attendance.ManageAttendanceActivity"
             android:exported="false" />
         <activity
+            android:name=".attendance.StudentSummaryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".attendance.StudentAttendanceActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".timetable.StudentTimetableActivity"
             android:exported="false" />
         <activity

@@ -1,17 +1,15 @@
-// AttendanceRecord.java
 package com.campussync.erp.attendance;
 
 public class AttendanceRecord {
-    public String courseId;
-    public String date;       // "yyyy-MM-dd"
-    public String studentUid;
-    public String status;     // "PRESENT" / "ABSENT"
+    public String rollNumber;
+    public String status;
+    public String date;
     public String markedBy;
+    public String classId; // ✅ ADDED
 
-    public AttendanceRecord() {} // needed for JSON
+    public AttendanceRecord() {}
 
-    @Override
-    public String toString() {
-        return date + " - " + status;
-    }
+    public String getStatus() { return status; }
+    public String getDate() { return date; }
+    public String getClassId() { return classId; }
 }

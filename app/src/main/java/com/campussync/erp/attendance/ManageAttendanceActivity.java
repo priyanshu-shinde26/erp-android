@@ -1,18 +1,24 @@
 package com.campussync.erp.attendance;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.campussync.erp.R;
-import com.google.firebase.auth.FirebaseAuth;
+import com.campussync.erp.assignment.StudentAssignmentsActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,199 +30,216 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class ManageAttendanceActivity extends AppCompatActivity {
-    private static final String BASE_URL = "http://10.0.2.2:9090";
-    private static final String DEFAULT_COURSE_ID = "GENERAL";
+public class ManageAttendanceActivity extends AppCompatActivity
+        implements StudentAttendanceAdapter.OnAttendanceClickListener {
+
     private static final String TAG = "ManageAttendanceActivity";
 
-    private EditText etStudentUid, etDate, etCourseId;
-    private Button btnMarkPresent, btnMarkAbsent, btnLoad;
-    private TextView tvSummary, tvAttendanceList;
-
+    private RecyclerView recyclerView;
+    private StudentAttendanceAdapter adapter;
+    private Spinner spinnerClass;  // NEW: Class spinner
     private final Gson gson = new Gson();
+    private String token;
+    private String selectedClassId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_attendance);
 
-        etStudentUid = findViewById(R.id.etStudentUid);
-        etDate = findViewById(R.id.etDate);
-        etCourseId = findViewById(R.id.etCourseId);
-        btnMarkPresent = findViewById(R.id.btnMarkPresent);
-        btnMarkAbsent = findViewById(R.id.btnMarkAbsent);
-        btnLoad = findViewById(R.id.btnLoadAttendance);
-        tvSummary = findViewById(R.id.tvSummary);
-        tvAttendanceList = findViewById(R.id.tvAttendanceList);
+        TextView tvCurrentDate = findViewById(R.id.tvCurrentDate);
+        tvCurrentDate.setText(getFormattedCurrentDate());
 
-        btnMarkPresent.setOnClickListener(v -> mark("PRESENT"));
-        btnMarkAbsent.setOnClickListener(v -> mark("ABSENT"));
-        btnLoad.setOnClickListener(v -> loadAttendance());
-    }
+        // NEW: Initialize class spinner
+        spinnerClass = findViewById(R.id.spinnerClass);
 
-    private void mark(String status) {
-        String studentUid = etStudentUid.getText().toString().trim();
-        String date = etDate.getText().toString().trim();
-        String courseId = etCourseId.getText().toString().trim();
+        recyclerView = findViewById(R.id.recyclerStudents);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if (TextUtils.isEmpty(studentUid) || TextUtils.isEmpty(date)) {
-            Toast.makeText(this, "Student UID and date required", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(courseId)) {
-            courseId = "GENERAL"; // default
-        }
+        // Adapter will receive student list later
+        adapter = new StudentAttendanceAdapter(this);
+        recyclerView.setAdapter(adapter);
 
-        // Build JSON body same as backend expects
-        String json = "{"
-                + "\"studentUid\":\"" + studentUid + "\","
-                + "\"courseId\":\"" + courseId + "\","
-                + "\"date\":\"" + date + "\","
-                + "\"status\":\"" + status + "\""
-                + "}";
-
+        // ✅ FIXED: Proper TokenCallback implementation
         BackendClient.getIdToken(new BackendClient.TokenCallback() {
             @Override
-            public void onToken(String token) {
-                BackendClient.postJson("/api/attendance/mark", token, json, new Callback() {
+            public void onToken(String idToken) {
+                token = idToken;
+                loadClasses();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                runOnUiThread(() ->
+                        Toast.makeText(ManageAttendanceActivity.this, "Authentication error", Toast.LENGTH_LONG).show());
+            }
+        });
+    }
+
+
+    // NEW: Token callback - loads classes first
+    private void onTokenReceived(String idToken) {
+        token = idToken;
+        loadClasses();
+    }
+
+    // NEW: Load classes for spinner
+    private void loadClasses() {
+        BackendClient.get("/api/classes", token, new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Type type = new TypeToken<List<ClassModel>>(){}.getType();
+                List<ClassModel> classes = gson.fromJson(response.body().string(), type);
+
+                runOnUiThread(() -> {
+                    ArrayAdapter<ClassModel> adapter = new ArrayAdapter<>(
+                            ManageAttendanceActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            classes
+                    );
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerClass.setAdapter(adapter);
+
+                    spinnerClass.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+                            ClassModel selectedClass = (ClassModel) parent.getItemAtPosition(position);
+                            loadStudentsForClass(selectedClass.classId);
+                        }
+
+                        @Override
+                        public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                    });
+                });
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(ManageAttendanceActivity.this, "Failed to load classes", Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+    // UPDATED: Load students for specific class
+    private void loadStudentsForClass(String classId) {
+        BackendClient.get("/api/students/class/" + classId, token, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(ManageAttendanceActivity.this, "Failed to load students", Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<StudentModel> list = gson.fromJson(
+                            response.body().string(),
+                            new TypeToken<List<StudentModel>>() {}.getType()
+                    );
+                    runOnUiThread(() -> adapter.setStudents(list));
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(ManageAttendanceActivity.this, "Error loading students: " + response.code(), Toast.LENGTH_LONG).show());
+                }
+            }
+        });
+    }
+
+    /**
+     * Called when PRESENT / ABSENT button is clicked
+     */
+    @Override
+    public void onAttendanceClick(String rollNumber, String status) {
+        markAttendance(rollNumber, status);
+    }
+    @Override
+    public void onViewSummaryClick(String rollNumber) {
+
+        Spinner spinnerClass = findViewById(R.id.spinnerClass);
+
+        if (spinnerClass.getSelectedItem() == null) {
+            Toast.makeText(
+                    this,
+                    "Please select class first",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        String classId = spinnerClass.getSelectedItem().toString();
+
+        Intent intent = new Intent(
+                ManageAttendanceActivity.this,
+                StudentSummaryActivity.class
+        );
+
+        intent.putExtra("classId", classId);
+        intent.putExtra("rollNumber", rollNumber);
+
+        startActivity(intent);
+    }
+
+    // UPDATED: Use class-based attendance API
+    private void markAttendance(String rollNumber, String status) {
+        ClassModel selectedClass = (ClassModel) spinnerClass.getSelectedItem();
+        if (selectedClass == null) {
+            Toast.makeText(this, "Please select a class first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String json = gson.toJson(Map.of(
+                "classId", selectedClass.classId,
+                "rollNumber", rollNumber,
+                "status", status
+        ));
+
+        BackendClient.postJson(
+                "/api/attendance/class/mark",  // UPDATED: New class-based endpoint
+                token,
+                json,
+                new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, "mark onFailure", e);
+                        Log.e(TAG, "markAttendance failed", e);
                         runOnUiThread(() ->
-                                Toast.makeText(ManageAttendanceActivity.this,
-                                        "Failed: " + e.getMessage(),
-                                        Toast.LENGTH_LONG).show()
+                                Toast.makeText(ManageAttendanceActivity.this, "Failed to mark attendance", Toast.LENGTH_LONG).show()
                         );
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        String body = response.body() != null ? response.body().string() : "";
-                        Log.d(TAG, "mark onResponse: " + response.code() + " " + body);
-
                         runOnUiThread(() -> {
                             if (response.isSuccessful()) {
-                                Toast.makeText(ManageAttendanceActivity.this,
-                                        "Attendance marked: " + status,
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(
+                                        ManageAttendanceActivity.this,
+                                        rollNumber + " marked " + status,
+                                        Toast.LENGTH_SHORT
+                                ).show();
                             } else if (response.code() == 403) {
-                                Toast.makeText(ManageAttendanceActivity.this,
-                                        "Forbidden: only ADMIN/TEACHER can mark",
-                                        Toast.LENGTH_LONG).show();
+                                Toast.makeText(
+                                        ManageAttendanceActivity.this,
+                                        "Only TEACHER / ADMIN allowed",
+                                        Toast.LENGTH_LONG
+                                ).show();
                             } else {
-                                Toast.makeText(ManageAttendanceActivity.this,
+                                Toast.makeText(
+                                        ManageAttendanceActivity.this,
                                         "Error: " + response.code(),
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_LONG
+                                ).show();
                             }
                         });
                     }
-                });
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "getIdToken error", e);
-                runOnUiThread(() ->
-                        Toast.makeText(ManageAttendanceActivity.this,
-                                "Not logged in / token error",
-                                Toast.LENGTH_LONG).show()
-                );
-            }
-        });
+                }
+        );
     }
 
-    private void loadAttendance() {
-        String studentUid = etStudentUid.getText().toString().trim();
-        String courseId = etCourseId.getText().toString().trim();
-        if (TextUtils.isEmpty(studentUid)) {
-            Toast.makeText(this, "Student UID required", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(courseId)) {
-            courseId = "GENERAL";
-        }
+    // REMOVED: Old loadStudents() - replaced by class-based loading
 
-        BackendClient.getIdToken(new BackendClient.TokenCallback() {
-            @Override
-            public void onToken(String token) {
-                // 1) List records
-                final String listPath = "/api/attendance/student/" + studentUid;
-
-                BackendClient.get(listPath, token, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, "loadAttendance list onFailure", e);
-                        runOnUiThread(() ->
-                                Toast.makeText(ManageAttendanceActivity.this,
-                                        "List fail: " + e.getMessage(),
-                                        Toast.LENGTH_LONG).show()
-                        );
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String body = response.body() != null ? response.body().string() : "";
-                        Log.d(TAG, "list onResponse: " + response.code() + " " + body);
-                        if (response.isSuccessful()) {
-                            Type listType = new TypeToken<List<AttendanceRecord>>() {}.getType();
-                            List<AttendanceRecord> records = gson.fromJson(body, listType);
-
-                            StringBuilder sb = new StringBuilder();
-                            if (records != null) {
-                                for (AttendanceRecord r : records) {
-                                    sb.append(r.date)
-                                            .append(" : ")
-                                            .append(r.status)
-                                            .append("\n");
-                                }
-                            }
-                            runOnUiThread(() -> tvAttendanceList.setText(sb.toString()));
-                        } else {
-                            runOnUiThread(() ->
-                                    Toast.makeText(ManageAttendanceActivity.this,
-                                            "List error: " + response.code(),
-                                            Toast.LENGTH_LONG).show()
-                            );
-                        }
-                    }
-                });
-
-                // 2) Summary
-                final String summaryPath = "/api/attendance/student/" + studentUid
-                        + "/summary";
-                BackendClient.get(summaryPath, token, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, "summary onFailure", e);
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String body = response.body() != null ? response.body().string() : "";
-                        Log.d(TAG, "summary onResponse: " + response.code() + " " + body);
-                        if (response.isSuccessful()) {
-                            AttendanceSummaryDto summary =
-                                    gson.fromJson(body, AttendanceSummaryDto.class);
-                            runOnUiThread(() -> {
-                                String text = "Summary: total=" + summary.totalClasses
-                                        + ", present=" + summary.presentCount
-                                        + ", absent=" + summary.absentCount
-                                        + ", %=" + summary.attendancePercentage;
-                                tvSummary.setText(text);
-                            });
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Exception e) {
-                runOnUiThread(() ->
-                        Toast.makeText(ManageAttendanceActivity.this,
-                                "Token error: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show()
-                );
-            }
-        });
+    private String getFormattedCurrentDate() {
+        SimpleDateFormat sdf =
+                new SimpleDateFormat("EEEE, dd MMM yyyy", Locale.getDefault());
+        return sdf.format(new Date());
     }
 }

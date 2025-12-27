@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvSummaryStudent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Summary: -"
+            android:id="@+id/infoText"
+            android:text="Loading..."
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/tvAttendanceListStudent"
+            android:id="@+id/tvAttendancePercentage"
+            android:text="Attendance: -"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Your attendance will appear here"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvAttendanceList"
+            android:text="Loading attendance..."
+            android:typeface="monospace"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnRefreshAttendance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:text="Refresh"
-            android:layout_marginTop="8dp" />
-
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </ScrollView>

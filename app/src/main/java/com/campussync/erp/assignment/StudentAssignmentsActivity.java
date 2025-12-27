@@ -297,11 +297,25 @@ public class StudentAssignmentsActivity extends AppCompatActivity
 
                     // 🔹 Persist this submission so it stays even after back
                     addSubmittedIdToPrefs(assignment.getId());
-                } else {
+                }  else if (response.code() == 403) {
 
+                Toast.makeText(
+                        StudentAssignmentsActivity.this,
+                        "Assignment is closed. Submission not allowed.",
+                        Toast.LENGTH_LONG
+                ).show();
+
+            } else {
+
+                Toast.makeText(
+                        StudentAssignmentsActivity.this,
+                        "Submission failed. Please try again.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
                 }
 
-            }
+
 
             @Override
             public void onFailure(Call<AssignmentSubmissionItem> call, Throwable t) {

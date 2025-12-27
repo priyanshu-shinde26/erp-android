@@ -1,85 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+    <!-- Screen title -->
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:text="Mark Attendance"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
 
-        <!-- Enter student UID (or later you can search by email) -->
-        <EditText
-            android:id="@+id/etStudentUid"
-            android:layout_width="match_parent"
+    <!-- Class Spinner + Current Date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Spinner
+            android:id="@+id/spinnerClass"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Student UID"
-            android:singleLine="true" />
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"/>
 
-        <!-- Date (yyyy-MM-dd) -->
-        <EditText
-            android:id="@+id/etDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Date (yyyy-MM-dd)"
-            android:singleLine="true" />
-
-        <!-- Hard-coded course for now -->
-        <EditText
-            android:id="@+id/etCourseId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="GENERAL"
-            android:hint="Course ID"
-            android:singleLine="true" />
-
-        <!-- Buttons to mark attendance -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <Button
-                android:id="@+id/btnMarkPresent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Mark PRESENT" />
-
-            <Button
-                android:id="@+id/btnMarkAbsent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Mark ABSENT"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <!-- Load attendance list -->
-        <Button
-            android:id="@+id/btnLoadAttendance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Load Attendance"
-            android:layout_marginTop="8dp" />
-
-        <!-- Summary text -->
         <TextView
-            android:id="@+id/tvSummary"
-            android:layout_width="match_parent"
+            android:id="@+id/tvCurrentDate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Summary: -"
-            android:layout_marginTop="8dp" />
-
-        <!-- Simple text area for list (you can later use RecyclerView) -->
-        <TextView
-            android:id="@+id/tvAttendanceList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Attendance list will appear here"
-            android:layout_marginTop="8dp" />
-
+            android:text="Date"
+            android:textSize="14sp"
+            android:gravity="center_vertical"/>
     </LinearLayout>
-</ScrollView>
+
+    <!-- Student list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerStudents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

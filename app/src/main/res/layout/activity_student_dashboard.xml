@@ -9,56 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Student profile info -->
+        <!-- ================= STUDENT INFO ================= -->
+
         <TextView
             android:id="@+id/infoText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student info will appear here"
+            android:text="Name: -\nRoll No: -"
             android:textSize="16sp"
             android:textStyle="bold"
             android:paddingBottom="16dp" />
 
-        <!-- Attendance summary header -->
-        <TextView
+        <!-- ================= ATTENDANCE BUTTON ================= -->
+
+        <Button
+            android:id="@+id/btnViewAttendance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Attendance Summary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="8dp"
-            android:paddingBottom="4dp" />
+            android:text="View Attendance"
+            android:layout_marginBottom="16dp" />
 
-        <!-- Summary content -->
-        <TextView
-            android:id="@+id/tvAttendanceSummary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Loading attendance summary..."
-            android:textSize="16sp"
-            android:paddingBottom="16dp" />
+        <!-- ================= OTHER MODULES ================= -->
 
-        <!-- Attendance list header -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Attendance Records"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="8dp"
-            android:paddingBottom="4dp" />
-
-        <!-- List of records -->
-        <TextView
-            android:id="@+id/tvAttendanceList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Loading attendance records..."
-            android:textSize="14sp"
-            android:paddingBottom="16dp"
-            android:typeface="monospace" />
-
-        <!-- Button must be inside LinearLayout -->
         <Button
             android:id="@+id/btnViewTimetable"
             android:layout_width="match_parent"
@@ -70,6 +42,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assignments"
+            android:layout_marginTop="12dp" />
+
+        <!-- ================= LOGOUT ================= -->
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

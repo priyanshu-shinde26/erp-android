@@ -10,6 +10,7 @@ import com.campussync.erp.assignment.*;
 import com.campussync.erp.assignment.AdminAssignmentsActivity;
 import com.campussync.erp.attendance.ManageAttendanceActivity;   // ✅ important import
 import com.campussync.erp.timetable.ManageTimetableActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
+        findViewById(R.id.btnLogout).setOnClickListener(v -> performLogout());
 
         Button btnManageTimetable = findViewById(R.id.btnManageTimetable);
         btnManageTimetable.setOnClickListener(v -> {
@@ -49,4 +51,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
 
     }
+    private void performLogout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
 }

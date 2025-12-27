@@ -10,6 +10,7 @@ import com.campussync.erp.assignment.TeacherAssignmentsActivity;
 import com.campussync.erp.assignment.*;
 import com.campussync.erp.attendance.ManageAttendanceActivity;  // ✅
 import com.campussync.erp.timetable.ManageTimetableActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class TeacherDashboardActivity extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class TeacherDashboardActivity extends AppCompatActivity {
         });
 
         attendanceBtn = findViewById(R.id.btn_manage_attendance);
+        findViewById(R.id.btnLogout).setOnClickListener(v -> performLogout());
 
         attendanceBtn.setOnClickListener(v ->
                 startActivity(
@@ -49,5 +51,13 @@ public class TeacherDashboardActivity extends AppCompatActivity {
 
 
 
+
+    }
+    private void performLogout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
