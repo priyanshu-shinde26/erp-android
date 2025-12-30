@@ -1,79 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_admin_assignments"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".assignment.AdminAssignmentsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 🔥 Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_admin_assignments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-        app:title="Assignments (Admin)"
+        app:title="🛠️ Admin Assignments"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
+    <!-- 🔥 Content -->
     <LinearLayout
-        android:id="@+id/container_admin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <!-- Filter row (optional: class filter) -->
-        <LinearLayout
+        <!-- 🔥 Delete Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_delete_selected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginBottom="16dp"
+            android:text="🗑️ Delete Selected (0)"
+            android:enabled="false"
+            style="@style/Widget.MaterialComponents.Button" />
 
-            <TextView
-                android:id="@+id/tv_admin_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Manage all assignments"
-                android:textStyle="bold"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
+        <!-- 🔥 Progress -->
         <ProgressBar
             android:id="@+id/progress_admin_assignments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            android:layout_marginTop="4dp" />
+            android:layout_marginVertical="24dp"
+            android:visibility="gone" />
 
+        <!-- 🔥 Empty State -->
         <TextView
             android:id="@+id/tv_admin_assignments_empty"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No assignments."
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:padding="16dp"
-            android:textSize="14sp"
+            android:text="📭 No assignments found\n\n👆 Create some first!"
+            android:textSize="16sp"
             android:visibility="gone" />
 
+        <!-- 🔥 RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_admin_assignments"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             tools:listitem="@layout/item_admin_assignment" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_delete_selected"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Delete Selected (0)"
-            android:layout_marginTop="8dp"
-            android:enabled="false" />
 
     </LinearLayout>
 

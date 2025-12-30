@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CampusSync</string>
+    <string name="select_class">Select Class</string>
+    <string name="add_assignment">Add Assignment</string>
+    <string name="no_assignments_icon">No assignments icon</string>
+
 </resources>

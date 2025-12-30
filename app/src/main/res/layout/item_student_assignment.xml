@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Top row: title + status chip -->
+        <!-- 🔥 Top row: title + status chip -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,36 +33,45 @@
                 android:maxLines="1"
                 android:ellipsize="end" />
 
+            <!-- 🔥 Status Chip -->
             <TextView
                 android:id="@+id/tv_status_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Not Submitted"
                 android:textSize="12sp"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
                 android:background="@drawable/bg_status_chip_neutral"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- Subject + due date -->
-        <TextView
-            android:id="@+id/tv_subject"
-            android:layout_width="wrap_content"
+        <!-- 🔥 Subject + due date row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subject: JAVA"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
 
-        <TextView
-            android:id="@+id/tv_due_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Due: 31 Dec 2025"
-            android:textSize="13sp"
-            android:layout_marginTop="2dp" />
+            <TextView
+                android:id="@+id/tv_subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Subject: JAVA"
+                android:textSize="13sp" />
 
-        <!-- Description -->
+            <TextView
+                android:id="@+id/tv_due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Due: 31 Dec 2025"
+                android:textSize="13sp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+
+        <!-- 🔥 Description -->
         <TextView
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
@@ -73,33 +82,49 @@
             android:ellipsize="end"
             android:layout_marginTop="4dp" />
 
-        <!-- Grade + feedback block (hidden by default) -->
+        <!-- 🔥 GRADE BLOCK (Animated appearance) -->
         <LinearLayout
             android:id="@+id/layout_grade_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_grade_block"
             android:visibility="gone"
+            android:elevation="2dp"
             tools:visibility="visible">
 
+            <!-- 🔥 Grade Badge (Green pill) -->
             <TextView
                 android:id="@+id/tv_grade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Marks: 18/20"
-                android:textSize="13sp" />
+                android:layout_gravity="center_horizontal"
+                android:text="⭐ 85/100"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_grade_badge"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:elevation="2dp" />
 
+            <!-- 🔥 Teacher Feedback -->
             <TextView
                 android:id="@+id/tv_feedback"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Feedback: Good job"
+                android:layout_marginTop="8dp"
+                android:text="Great work! Keep practicing the concepts."
                 android:textSize="13sp"
-                android:layout_marginTop="2dp" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:gravity="center"
+                android:maxLines="2"
+                android:ellipsize="end" />
         </LinearLayout>
 
-        <!-- Buttons row -->
+        <!-- 🔥 Buttons Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,19 +132,21 @@
             android:gravity="end"
             android:layout_marginTop="8dp">
 
+            <!-- 🔥 View Question Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_view_question"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="View Question"
+                android:text="📄 View Question"
                 android:layout_marginEnd="8dp" />
 
+            <!-- 🔥 Submit Button (Dynamic text) -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_submit_pdf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Submit PDF" />
+                android:text="📤 Submit PDF" />
         </LinearLayout>
 
     </LinearLayout>

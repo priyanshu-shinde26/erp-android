@@ -63,8 +63,15 @@
         <!-- ================= ASSIGNMENT MODULE ACTIVITIES ================= -->
 
         <!-- Student: view assignments (available/submitted/pending) -->
+        <!-- 🔥 Add this activity -->
         <activity
             android:name=".assignment.StudentAssignmentsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CampusSync" />
+
+        <!-- Find & FIX this activity declaration -->
+        <activity
+            android:name=".assignment.AdminAssignmentActivity"
             android:exported="false" />
 
 
@@ -76,9 +83,6 @@
             android:name=".assignment.AssignmentSubmissionsActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".assignment.AdminAssignmentsActivity"
-            android:exported="false" />
 
 
         <!-- ================================================================ -->

@@ -5,6 +5,7 @@ converterGson = "2.9.0"
 converterGsonVersion = "2.11.0"
 firebaseAuth = "24.0.1"
 firebaseDatabase = "22.0.1"
+flexbox = "3.0.0"
 googleServices = "4.4.4"
 gradle = "7.4.2"
 gradleVersion = "8.13.0"
@@ -36,6 +37,7 @@ converter-gson-v2110 = { module = "com.squareup.retrofit2:converter-gson", versi
 converter-gson-v290 = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gradle-v860 = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }

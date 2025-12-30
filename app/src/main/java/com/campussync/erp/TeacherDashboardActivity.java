@@ -6,8 +6,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.campussync.erp.assignment.TeacherAssignmentsActivity;
-import com.campussync.erp.assignment.*;
 import com.campussync.erp.attendance.ManageAttendanceActivity;  // ✅
 import com.campussync.erp.timetable.ManageTimetableActivity;
 import com.google.firebase.auth.FirebaseAuth;

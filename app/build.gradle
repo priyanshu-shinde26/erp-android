@@ -71,6 +71,7 @@ dependencies {
     implementation libs.retrofit.v290
     implementation libs.converter.gson.v290
     implementation libs.logging.interceptor.v4120
+    implementation libs.flexbox
 
     implementation libs.retrofit.v2110
     implementation libs.converter.gson.v2110

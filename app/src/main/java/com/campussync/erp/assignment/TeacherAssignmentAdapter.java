@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class TeacherAssignmentAdapter extends RecyclerView.Adapter<TeacherAssignmentAdapter.ViewHolder> {
 
+    // FIXED: Interface defined HERE in Adapter (not in Activity)
     public interface Listener {
         void onUploadQuestionClicked(AssignmentItem item);
         void onViewSubmissionsClicked(AssignmentItem item);
@@ -72,7 +73,7 @@ public class TeacherAssignmentAdapter extends RecyclerView.Adapter<TeacherAssign
         String dateStr = DateFormat.format("dd MMM yyyy, hh:mm a", new Date(item.getDueDate())).toString();
         holder.tvDueDate.setText("Due: " + dateStr);
 
-        // Question status
+        // FIXED: Correct method name
         if (!TextUtils.isEmpty(item.getQuestionFileUrl())) {
             holder.tvQuestionStatus.setText("Question: attached");
             holder.btnUploadQuestion.setText("Replace Question");

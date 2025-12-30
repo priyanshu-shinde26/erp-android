@@ -18,7 +18,7 @@
             android:id="@+id/tv_student_uid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📚 Aman Kumar (CSE-001)"
+            android:text="👤 Aman Kumar (CSE-001)"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
@@ -90,16 +90,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end">
+            android:gravity="end"
+            android:layout_marginTop="12dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_open_pdf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📄 View PDF"
+                android:text="📄 View File"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_marginEnd="8dp" />
 
+            <!-- 🔥 GRADE BUTTON -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_grade"
                 android:layout_width="wrap_content"

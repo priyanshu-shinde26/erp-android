@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- 🔥 Student Name -->
+    <TextView
+        android:id="@+id/tv_student_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📚 Student Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:background="#F0F4F8"
+        android:layout_marginBottom="20dp" />
+
+    <!-- 🔥 Marks -->
+    <EditText
+        android:id="@+id/et_marks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="⭐ Marks (0-100)"
+        android:inputType="number"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 🔥 Feedback -->
+    <EditText
+        android:id="@+id/et_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="💬 Feedback (optional)"
+        android:inputType="textMultiLine"
+        android:gravity="top|start" />
+
+</LinearLayout>

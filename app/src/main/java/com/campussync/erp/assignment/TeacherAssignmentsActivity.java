@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,18 +29,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.campussync.erp.R;
 import com.campussync.erp.assignment.AssignmentModels.AssignmentItem;
-import com.campussync.erp.assignment.AssignmentModels.AssignmentSubmissionItem;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -47,10 +58,9 @@ import retrofit2.Response;
 
 /**
  * Teacher/Admin UI for managing assignments:
- *  - View list
- *  - Create / Edit / Delete
- *  - Upload Question PDF
- *  - Open submissions screen
+ *  - Dynamically fetches classes from Firebase 'students' or 'users' node
+ *  - Strictly filters assignments by selected class
+ *  - Preserves PDF upload logic
  */
 public class TeacherAssignmentsActivity extends AppCompatActivity
         implements TeacherAssignmentAdapter.Listener {
@@ -58,12 +68,19 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
     private MaterialToolbar toolbar;
     private ProgressBar progressBar;
     private TextView tvEmpty;
+    private TextView tvTeacherClassDisplay; // shows selected class
     private RecyclerView recyclerView;
     private FloatingActionButton fabAdd;
+    private Spinner spinnerClassFilter;
 
     private TeacherAssignmentAdapter adapter;
 
     private String currentIdToken;
+    private String selectedClassId = null;
+
+    private final List<String> classList = new ArrayList<>();
+    private ArrayAdapter<String> classSpinnerAdapter;
+    private boolean ignoreFirstSelection = true;
 
     private AssignmentItem pendingAssignmentForUpload;
 
@@ -88,105 +105,283 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_assignment);
 
+        // Bind Views
         toolbar = findViewById(R.id.toolbar_teacher_assignments);
         progressBar = findViewById(R.id.progress_teacher_assignments);
         tvEmpty = findViewById(R.id.tv_teacher_assignments_empty);
         recyclerView = findViewById(R.id.rv_teacher_assignments);
         fabAdd = findViewById(R.id.fab_add_assignment);
 
+        spinnerClassFilter = findViewById(R.id.spinner_class_filter);
+        tvTeacherClassDisplay = findViewById(R.id.tv_teacher_class_display);
+
+        // Setup Toolbar
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        adapter = new TeacherAssignmentAdapter(
-                this,
-                new ArrayList<>(),
-                this
-        );
+        // Setup RecyclerView
+        adapter = new TeacherAssignmentAdapter(this, new ArrayList<>(), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> showCreateOrEditDialog(null));
 
-        fetchIdTokenAndLoadAssignments();
+        setupClassFilterSpinner();
+        fetchIdToken();
+
+        // 🔥 Start loading classes
+        fetchClassIdsFromStudents();
     }
 
     private boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            loadAssignments();
+            if (selectedClassId == null) {
+                Toast.makeText(this, "Select class first", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            loadAssignmentsForSelectedClass();
             return true;
         }
         return false;
     }
 
+    private void setupClassFilterSpinner() {
+        classSpinnerAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                classList
+        );
+        spinnerClassFilter.setAdapter(classSpinnerAdapter);
 
-    private void fetchIdTokenAndLoadAssignments() {
+        spinnerClassFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (ignoreFirstSelection) {
+                    ignoreFirstSelection = false;
+                    return;
+                }
+
+                if (position < 0 || position >= classList.size()) return;
+
+                selectedClassId = classList.get(position);
+                tvTeacherClassDisplay.setText("👥 Selected: " + selectedClassId);
+
+                // Load assignments immediately when dropdown changes
+                if (currentIdToken != null) {
+                    loadAssignmentsForSelectedClass();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        tvTeacherClassDisplay.setText("👥 Select a class to begin");
+    }
+
+    private void fetchIdToken() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-
-        progressBar.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.GONE);
-
         user.getIdToken(true)
-                .addOnSuccessListener(result -> {
-                    currentIdToken = result.getToken();
-                    loadAssignments();
-                })
-                .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Failed to get auth token", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(result -> currentIdToken = result.getToken())
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to get auth token", Toast.LENGTH_SHORT).show());
     }
 
-    private void loadAssignments() {
-        if (currentIdToken == null) {
-            Toast.makeText(this, "No auth token", Toast.LENGTH_SHORT).show();
+    // =======================================================
+    // 🔥 FIXED: Fetch classes from Firebase users/students node
+    // =======================================================
+
+    private void fetchClassIdsFromStudents() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        // 🔥 TRY "students" node first
+        DatabaseReference studentsRef = FirebaseDatabase.getInstance().getReference("students");
+        studentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Set<String> distinctClasses = new LinkedHashSet<>();
+
+                if (snapshot.exists() && snapshot.hasChildren()) {
+                    // 🔥 Extract classId from each student
+                    for (DataSnapshot studentSnap : snapshot.getChildren()) {
+                        String classId = studentSnap.child("classId").getValue(String.class);
+                        if (classId != null && !classId.trim().isEmpty()) {
+                            distinctClasses.add(classId.trim());
+                        }
+                    }
+                    updateClassList(distinctClasses);
+                } else {
+                    // 🔥 Fallback to "users" node if "students" is empty/missing
+                    fetchFromUsersNode();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // On error, also try fallback
+                fetchFromUsersNode();
+            }
+        });
+    }
+
+    /**
+     * 🔥 FALLBACK: Try users node if students node empty
+     */
+    private void fetchFromUsersNode() {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Set<String> distinctClasses = new LinkedHashSet<>();
+
+                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                    String classId = userSnap.child("classId").getValue(String.class);
+                    String role = userSnap.child("role").getValue(String.class);
+
+                    // 🔥 Only students (teachers won't have classId usually)
+                    if (classId != null && !classId.trim().isEmpty() &&
+                            (role == null || role.equalsIgnoreCase("student"))) {
+                        distinctClasses.add(classId.trim());
+                    }
+                }
+
+                updateClassList(distinctClasses);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
+                tvEmpty.setVisibility(View.VISIBLE);
+                tvEmpty.setText("❌ No classes found\nCheck Firebase data");
+            }
+        });
+    }
+
+    /**
+     * 🔥 Update spinner with sorted classes
+     */
+    private void updateClassList(Set<String> distinctClasses) {
+        classList.clear();
+        classList.addAll(distinctClasses);
+        Collections.sort(classList);
+
+        classSpinnerAdapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+
+        if (classList.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            tvEmpty.setText("📭 No classes found\nAdd students with classId first");
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.GONE);
+        Toast.makeText(this, "✅ " + classList.size() + " classes loaded", Toast.LENGTH_SHORT).show();
+
+        // 🔥 Auto-select first class
+        ignoreFirstSelection = true;
+        spinnerClassFilter.setSelection(0);
+        selectedClassId = classList.get(0);
+        tvTeacherClassDisplay.setText("👥 Selected: " + selectedClassId);
+
+        if (currentIdToken != null) {
+            loadAssignmentsForSelectedClass();
+        }
+    }
+
+    // =======================================================
+    // Loading Assignments with Strict Filtering
+    // =======================================================
+
+    /**
+     * 🔥 FIXED: Proper UI state management
+     */
+    private void loadAssignmentsForSelectedClass() {
+        if (currentIdToken == null || selectedClassId == null || selectedClassId.isEmpty()) {
+            showEmptyState("⚠️ Select class first");
+            return;
+        }
+
+        showLoadingState();
+        Log.d("TeacherAssignments", "Loading assignments for: " + selectedClassId);
 
         AssignmentApiService api = AssignmentRetrofitClient.getApiService();
-        // For teacher view, we can see all assignments
-        Call<List<AssignmentItem>> call = api.getAssignments(
-                "Bearer " + currentIdToken,
-                null   // no classId -> all
-        );
+        Call<List<AssignmentItem>> call = api.getAssignments("Bearer " + currentIdToken, selectedClassId);
 
         call.enqueue(new Callback<List<AssignmentItem>>() {
             @Override
             public void onResponse(Call<List<AssignmentItem>> call, Response<List<AssignmentItem>> response) {
-                progressBar.setVisibility(View.GONE);
-                if (response.isSuccessful()) {
-                    List<AssignmentItem> list = response.body();
-                    if (list == null || list.isEmpty()) {
-                        tvEmpty.setVisibility(View.VISIBLE);
-                        adapter.setItems(new ArrayList<>());
-                    } else {
-                        tvEmpty.setVisibility(View.GONE);
-                        adapter.setItems(list);
+                Log.d("TeacherAssignments", "API Response: " + response.code());
+
+                List<AssignmentItem> allAssignments = response.body();
+                if (allAssignments == null) allAssignments = new ArrayList<>();
+
+                // 🔥 Filter by classId
+                List<AssignmentItem> filtered = new ArrayList<>();
+                for (AssignmentItem item : allAssignments) {
+                    if (item != null && selectedClassId.equalsIgnoreCase(item.getClassId())) {
+                        filtered.add(item);
+                        Log.d("TeacherAssignments", "Added: " + item.getTitle() + " for " + item.getClassId());
                     }
+                }
+
+                Log.d("TeacherAssignments", "Filtered: " + filtered.size() + "/" + allAssignments.size());
+
+                if (filtered.isEmpty()) {
+                    showEmptyState("📭 No assignments for " + selectedClassId + "\n\n➕ Tap + to create first");
                 } else {
-                    tvEmpty.setVisibility(View.VISIBLE);
-                    tvEmpty.setText("Failed to load assignments (" + response.code() + ")");
+                    showAssignments(filtered);
                 }
             }
 
             @Override
             public void onFailure(Call<List<AssignmentItem>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                tvEmpty.setVisibility(View.VISIBLE);
-                tvEmpty.setText("Error: " + t.getMessage());
+                Log.e("TeacherAssignments", "API Failure: " + t.getMessage());
+                showEmptyState("🌐 Network error\n" + t.getMessage());
             }
         });
     }
 
-    // ====== Adapter Listener methods ======
+    /**
+     * 🔥 Show loading spinner + hide everything else
+     */
+    private void showLoadingState() {
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.GONE);
+        tvTeacherClassDisplay.setText("🔄 Loading " + selectedClassId + "...");
+    }
+
+    /**
+     * 🔥 Show assignments list
+     */
+    private void showAssignments(List<AssignmentItem> assignments) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE);
+        tvTeacherClassDisplay.setText("👥 " + selectedClassId + " (" + assignments.size() + ")");
+
+        adapter.setItems(assignments);
+        Log.d("TeacherAssignments", "Showing " + assignments.size() + " assignments");
+    }
+
+    /**
+     * 🔥 Show empty message
+     */
+    private void showEmptyState(String message) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.VISIBLE);
+        tvEmpty.setText(message);
+        tvTeacherClassDisplay.setText("👥 " + selectedClassId);
+    }
+
+    // =======================================================
+    // Adapter Listeners
+    // =======================================================
 
     @Override
     public void onUploadQuestionClicked(AssignmentItem item) {
@@ -219,7 +414,9 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                 .show();
     }
 
-    // ====== Question PDF upload ======
+    // =======================================================
+    // PDF Upload Logic (UNCHANGED)
+    // =======================================================
 
     private void openPdfPicker() {
         try {
@@ -287,7 +484,8 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                 if (response.isSuccessful()) {
                     Toast.makeText(TeacherAssignmentsActivity.this,
                             "Question PDF uploaded", Toast.LENGTH_SHORT).show();
-                    loadAssignments();
+                    // Reload for current class
+                    loadAssignmentsForSelectedClass();
                 } else {
                     Toast.makeText(TeacherAssignmentsActivity.this,
                             "Upload failed (" + response.code() + ")", Toast.LENGTH_SHORT).show();
@@ -320,7 +518,9 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
         return buffer.toByteArray();
     }
 
-    // ====== Create / Edit assignment dialog ======
+    // =======================================================
+    // Dialog Logic (Using loaded classList)
+    // =======================================================
 
     private void showCreateOrEditDialog(@Nullable AssignmentItem existing) {
         View dialogView = LayoutInflater.from(this)
@@ -328,21 +528,36 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
 
         EditText etTitle = dialogView.findViewById(R.id.et_title);
         EditText etDescription = dialogView.findViewById(R.id.et_description);
-        EditText etClassId = dialogView.findViewById(R.id.et_class_id);
+        Spinner spinnerClass = dialogView.findViewById(R.id.spinner_class);
         EditText etSubject = dialogView.findViewById(R.id.et_subject);
         EditText etDueDate = dialogView.findViewById(R.id.et_due_date);
 
         final long[] dueDateMillis = {System.currentTimeMillis() + 7L * 24L * 60L * 60L * 1000L};
 
+        // Populate dialog spinner with loaded classes
+        ArrayAdapter<String> dialogClassAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                classList
+        );
+        spinnerClass.setAdapter(dialogClassAdapter);
+
         if (existing != null) {
             etTitle.setText(existing.getTitle());
             etDescription.setText(existing.getDescription());
-            etClassId.setText(existing.getClassId());
             etSubject.setText(existing.getSubject());
             dueDateMillis[0] = existing.getDueDate();
+
+            // Set spinner to existing class
+            int idx = classList.indexOf(existing.getClassId());
+            if (idx >= 0) spinnerClass.setSelection(idx);
         } else {
-            etClassId.setText("CSE-2");
+            // Default to currently selected class in filter
             etSubject.setText("JAVA");
+            if (selectedClassId != null) {
+                int idx = classList.indexOf(selectedClassId);
+                if (idx >= 0) spinnerClass.setSelection(idx);
+            }
         }
 
         etDueDate.setText(DateFormat.format("dd/MM/yyyy", dueDateMillis[0]));
@@ -362,9 +577,7 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                         dueDateMillis[0] = picked.getTimeInMillis();
                         etDueDate.setText(DateFormat.format("dd/MM/yyyy", picked));
                     },
-                    year,
-                    month,
-                    day
+                    year, month, day
             );
             dpd.show();
         });
@@ -375,11 +588,14 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                 .setPositiveButton(existing == null ? "Create" : "Update", (d, which) -> {
                     String title = etTitle.getText().toString().trim();
                     String desc = etDescription.getText().toString().trim();
-                    String classId = etClassId.getText().toString().trim();
+                    String classId = "";
+                    if (spinnerClass.getSelectedItem() != null) {
+                        classId = spinnerClass.getSelectedItem().toString().trim();
+                    }
                     String subject = etSubject.getText().toString().trim();
 
                     if (title.isEmpty() || classId.isEmpty() || subject.isEmpty()) {
-                        Toast.makeText(this, "Title, Class ID and Subject are required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Title, Class and Subject are required", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -403,11 +619,8 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
         }
 
         AssignmentApiService api = AssignmentRetrofitClient.getApiService();
-
         AssignmentApiService.CreateAssignmentRequest body =
-                new AssignmentApiService.CreateAssignmentRequest(
-                        title, desc, classId, subject, dueDateMillis
-                );
+                new AssignmentApiService.CreateAssignmentRequest(title, desc, classId, subject, dueDateMillis);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -417,13 +630,15 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                     public void onResponse(Call<AssignmentItem> call, Response<AssignmentItem> response) {
                         progressBar.setVisibility(View.GONE);
                         if (response.isSuccessful()) {
-                            Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Assignment created", Toast.LENGTH_SHORT).show();
-                            loadAssignments();
+                            Toast.makeText(TeacherAssignmentsActivity.this, "Assignment created", Toast.LENGTH_SHORT).show();
+
+                            // Reload ONLY if created for currently viewed class
+                            if (classId.equals(selectedClassId)) {
+                                loadAssignmentsForSelectedClass();
+                            }
                         } else {
                             Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Create failed (" + response.code() + ")",
-                                    Toast.LENGTH_SHORT).show();
+                                    "Create failed (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -444,11 +659,8 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
         }
 
         AssignmentApiService api = AssignmentRetrofitClient.getApiService();
-
         AssignmentApiService.UpdateAssignmentRequest body =
-                new AssignmentApiService.UpdateAssignmentRequest(
-                        title, desc, classId, subject, dueDateMillis
-                );
+                new AssignmentApiService.UpdateAssignmentRequest(title, desc, classId, subject, dueDateMillis);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -458,13 +670,11 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                     public void onResponse(Call<AssignmentItem> call, Response<AssignmentItem> response) {
                         progressBar.setVisibility(View.GONE);
                         if (response.isSuccessful()) {
-                            Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Assignment updated", Toast.LENGTH_SHORT).show();
-                            loadAssignments();
+                            Toast.makeText(TeacherAssignmentsActivity.this, "Assignment updated", Toast.LENGTH_SHORT).show();
+                            loadAssignmentsForSelectedClass();
                         } else {
                             Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Update failed (" + response.code() + ")",
-                                    Toast.LENGTH_SHORT).show();
+                                    "Update failed (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -492,13 +702,11 @@ public class TeacherAssignmentsActivity extends AppCompatActivity
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         progressBar.setVisibility(View.GONE);
                         if (response.isSuccessful()) {
-                            Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Assignment deleted", Toast.LENGTH_SHORT).show();
-                            loadAssignments();
+                            Toast.makeText(TeacherAssignmentsActivity.this, "Assignment deleted", Toast.LENGTH_SHORT).show();
+                            loadAssignmentsForSelectedClass();
                         } else {
                             Toast.makeText(TeacherAssignmentsActivity.this,
-                                    "Delete failed (" + response.code() + ")",
-                                    Toast.LENGTH_SHORT).show();
+                                    "Delete failed (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 

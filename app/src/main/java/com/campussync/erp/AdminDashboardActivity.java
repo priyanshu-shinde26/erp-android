@@ -7,7 +7,10 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.campussync.erp.assignment.*;
-import com.campussync.erp.assignment.AdminAssignmentsActivity;
+// In AdminDashboardActivity.java
+import com.campussync.erp.assignment.AdminAssignmentActivity;  // ✅ FIXED
+
+// Start activity
 import com.campussync.erp.attendance.ManageAttendanceActivity;   // ✅ important import
 import com.campussync.erp.timetable.ManageTimetableActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +45,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         Button btnAssignments = findViewById(R.id.btn_assignments);
         if (btnAssignments != null) {
             btnAssignments.setOnClickListener(v -> {
-                Intent i = new Intent(this, com.campussync.erp.assignment.AdminAssignmentsActivity.class);
+                Intent i = new Intent(this, AdminAssignmentActivity.class);  // singular
+
                 startActivity(i);
             });
         } else {
