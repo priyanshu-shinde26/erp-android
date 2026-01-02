@@ -1,38 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📅 Manage Timetable"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Class + Day selectors -->
     <LinearLayout
-        android:id="@+id/header"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
 
-        <TextView
-            android:id="@+id/tvTitleManage"
-            android:text="Manage Timetable"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <Spinner
+            android:id="@+id/spinnerClass"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"/>
 
+        <Spinner
+            android:id="@+id/spinnerDay"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSelected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="👆 Select class + day"
+        android:textSize="14sp"
+        android:textColor="#666"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnLoadSchedule"
+        android:text="🔄 Load Schedule"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="12dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="👆 Select class + day → Load schedule"
+        android:textSize="16sp"
+        android:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTimetableManage"
-        android:layout_below="@id/header"
-        android:layout_above="@+id/btnAddEntry"
-        android:layout_marginTop="12dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnAddEntry"
-        android:text="Add Timetable Entry"
-        android:layout_alignParentBottom="true"
+        android:text="➕ Add Period"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="48dp"/>
 
-</RelativeLayout>
+</LinearLayout>

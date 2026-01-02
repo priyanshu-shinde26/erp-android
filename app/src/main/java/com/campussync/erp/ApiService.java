@@ -1,6 +1,7 @@
 package com.campussync.erp;
 
-import com.campussync.erp.timetable.TimetableEntry;
+import com.campussync.erp.timetable.SchedulePeriod;
+import com.campussync.erp.timetable.ClassTimetableResponse;
 
 import java.util.List;
 
@@ -14,34 +15,44 @@ import retrofit2.http.Path;
 
 public interface ApiService {
 
-    // ===================== EXISTING ENDPOINTS =====================
-    // keep your other methods here (students, attendance, etc.)
-    // e.g. Call<List<Student>> getStudents(...);
-    // =============================================================
+    // ===================== YOUR EXISTING ENDPOINTS (KEEP ALL) =====================
+    // getStudents(), attendance, assignments, etc. – UNCHANGED!
+    // ============================================================================
 
+    // ====================== TIMETABLE FIREBASE ENDPOINTS =========================
 
-    // ====================== TIMETABLE API =========================
+    // ✅ NEW: Get classes list for dropdown (unique from students)
+    @GET("api/timetable/classes")
+    Call<List<String>> getTimetableClasses();
 
-    // Everyone logged in (Student / Teacher / Admin) – view all entries
-    @GET("api/timetable")
-    Call<List<TimetableEntry>> getTimetableAll();
+    // ✅ NEW: Teacher/Admin - Get day schedule by class/day
+    @GET("api/timetable/{classId}/{day}")
+    Call<List<SchedulePeriod>> getDaySchedule(@Path("classId") String classId,
+                                              @Path("day") String day);
 
-    // Optional: filter by day e.g. /api/timetable/day/MONDAY
-    @GET("api/timetable/day/{dayOfWeek}")
-    Call<List<TimetableEntry>> getTimetableByDay(@Path("dayOfWeek") String dayOfWeek);
+    // ✅ NEW: Student - Get full week schedule (or today)
+    @GET("api/timetable/{classId}")
+    Call<ClassTimetableResponse> getClassTimetable(@Path("classId") String classId);
 
-    // Admin / Teacher – create
-    @POST("api/timetable")
-    Call<TimetableEntry> createTimetableEntry(@Body TimetableEntry entry);
+    // ✅ NEW: Teacher/Admin - Create period for class/day
+    @POST("api/timetable/{classId}/{day}")
+    Call<Void> createTimetablePeriod(@Path("classId") String classId,
+                                     @Path("day") String day,
+                                     @Body SchedulePeriod period);
 
-    // Admin / Teacher – update
-    @PUT("api/timetable/{id}")
-    Call<TimetableEntry> updateTimetableEntry(@Path("id") Long id,
-                                              @Body TimetableEntry entry);
+    // ✅ NEW: Teacher/Admin - Update specific period
+    @PUT("api/timetable/{classId}/{day}/{periodId}")
+    Call<Void> updateTimetablePeriod(@Path("classId") String classId,
+                                     @Path("day") String day,
+                                     @Path("periodId") String periodId,
+                                     @Body SchedulePeriod period);
 
-    // Admin / Teacher – delete
-    @DELETE("api/timetable/{id}")
-    Call<Void> deleteTimetableEntry(@Path("id") Long id);
+    // ✅ NEW: Teacher/Admin - Delete specific period
+    @DELETE("api/timetable/{classId}/{day}/{periodId}")
+    Call<Void> deleteTimetablePeriod(@Path("classId") String classId,
+                                     @Path("day") String day,
+                                     @Path("periodId") String periodId);
 
-    // =============================================================
+    // ===================== BACKWARD COMPATIBILITY (Optional) ======================
+   //==================================================================
 }

@@ -1,51 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
 
-    <LinearLayout
-        android:orientation="vertical"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilStartTime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Start Time"
+        app:endIconMode="custom"
+        app:endIconDrawable="@android:drawable/ic_menu_recent_history">
 
-        <Spinner
-            android:id="@+id/spDayOfWeek"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/days_of_week" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etStartTime"
-            android:hint="Start Time (09:00)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="none"
+            android:focusable="false"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilEndTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="End Time"
+        app:endIconMode="custom"
+        app:endIconDrawable="@android:drawable/ic_menu_recent_history">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEndTime"
-            android:hint="End Time (10:00)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="none"
+            android:focusable="false"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilSubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Subject"
+        app:startIconDrawable="@android:drawable/ic_menu_agenda">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSubject"
-            android:hint="Subject"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTeacher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Teacher ID">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTeacher"
-            android:hint="Teacher"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/etRoom"
-            android:hint="Room"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
