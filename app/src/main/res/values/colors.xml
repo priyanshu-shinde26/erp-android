@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material Colors -->
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF80DEEA</color>
+    <color name="teal_700">#FF009688</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Status Bar / App Bar -->
+    <color name="primary">#FF2196F3</color>
+    <color name="primary_variant">#FF1976D2</color>
+    <color name="secondary">#FF03DAC6</color>
 </resources>

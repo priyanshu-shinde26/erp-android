@@ -6,9 +6,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.campussync.erp.assignment.*;
 import com.campussync.erp.assignment.AdminAssignmentActivity;
 import com.campussync.erp.attendance.ManageAttendanceActivity;
+import com.campussync.erp.lms.TeacherLmsActivity;
 import com.campussync.erp.timetable.ManageTimetableActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -53,6 +53,13 @@ public class AdminDashboardActivity extends AppCompatActivity {
         } else {
             android.util.Log.e("AdminDashboard", "btn_assignments not found in layout");
         }
+        // In onCreate():
+        Button btnLms = findViewById(R.id.btnLms);
+        btnLms.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, TeacherLmsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void performLogout() {

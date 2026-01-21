@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.campussync.erp.assignment.StudentAssignmentsActivity;
 import com.campussync.erp.attendance.StudentAttendanceActivity;
+import com.campussync.erp.lms.StudentLmsActivity;
 import com.campussync.erp.timetable.StudentTimetableActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -98,6 +99,13 @@ public class StudentDashboardActivity extends AppCompatActivity {
             Toast.makeText(this, "No logged-in user", Toast.LENGTH_SHORT).show();
             finish();
         }
+        // In onCreate():
+        Button btnLms = findViewById(R.id.btnLms);
+        btnLms.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentDashboardActivity.this, StudentLmsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     // ================= STUDENT PROFILE =================

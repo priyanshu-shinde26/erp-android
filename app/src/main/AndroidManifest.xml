@@ -85,7 +85,21 @@
 
 
 
-        <!-- ================================================================ -->
+        <!-- ===================LMS Activities============================================= -->
+        <activity
+            android:name=".lms.StudentLmsActivity"
+            android:exported="false"
+            android:label="Class Notes" />
+
+        <activity
+            android:name=".lms.TeacherLmsActivity"
+            android:exported="false"
+            android:label="Manage Notes" />
+
+        <activity
+            android:name=".lms.UploadNoteActivity"
+            android:exported="false"
+            android:label="Upload Note" />
 
         <!-- Add any other activities here -->
 

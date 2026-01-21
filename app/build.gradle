@@ -81,6 +81,6 @@ dependencies {
     implementation libs.material.v1110
     implementation libs.material.v1130
 
-
+    implementation libs.glide
 
 }
