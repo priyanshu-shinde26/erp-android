@@ -23,8 +23,12 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 materialVersion = "1.11.0"
+mpandroidchart = "v3.1.0"
 okhttp = "5.3.0"
 okhttpVersion = "4.10.0"
+protobufJava = "..."
+protoGoogleCommonProtos = "..."
+recyclerview = "1.4.0"
 retrofit = "3.0.0"
 retrofitVersion = "2.9.0"
 slf4jAndroid = "1.7.36"
@@ -32,6 +36,9 @@ slf4jApi = "2.0.17"
 firebaseAppdistributionGradle = "5.2.0"
 squareupOkhttp = "4.12.0"
 squareupRetrofit = "2.11.0"
+firebaseFirestore = "26.1.0"
+roomCommonJvm = "2.8.4"
+roomRuntimeJvm = "2.8.4"
 
 [libraries]
 activity-v191 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -59,15 +66,24 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v1110 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 material-v1130 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-v4100 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion" }
 okhttp-v4120 = { module = "com.squareup.okhttp3:okhttp", version.ref = "squareupOkhttp" }
+proto-google-common-protos = { module = "com.google.api.grpc:proto-google-common-protos", version.ref = "protoGoogleCommonProtos" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobufJava" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJava" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-v2110 = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareupRetrofit" }
 retrofit-v290 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCommonJvm" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCommonJvm" }
 slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4jAndroid" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 firebase-appdistribution-gradle = { group = "com.google.firebase", name = "firebase-appdistribution-gradle", version.ref = "firebaseAppdistributionGradle" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

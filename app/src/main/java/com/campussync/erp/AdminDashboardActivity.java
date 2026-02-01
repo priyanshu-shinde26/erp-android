@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.campussync.erp.assignment.AdminAssignmentActivity;
 import com.campussync.erp.attendance.ManageAttendanceActivity;
 import com.campussync.erp.lms.TeacherLmsActivity;
 import com.campussync.erp.timetable.ManageTimetableActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -59,6 +64,18 @@ public class AdminDashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminDashboardActivity.this, TeacherLmsActivity.class);
             startActivity(intent);
         });
+
+        // ACADMIC BUTTON
+
+        Button btnAcademics = findViewById(R.id.btnAcademics);
+
+        btnAcademics.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this,
+                    com.campussync.erp.academics.AcademicDashboardActivity.class);
+            intent.putExtra("role", "ADMIN");
+            startActivity(intent);
+        });
+
 
     }
 

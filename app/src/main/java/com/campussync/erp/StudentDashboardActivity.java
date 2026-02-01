@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +18,6 @@ import com.campussync.erp.assignment.StudentAssignmentsActivity;
 import com.campussync.erp.attendance.StudentAttendanceActivity;
 import com.campussync.erp.lms.StudentLmsActivity;
 import com.campussync.erp.timetable.StudentTimetableActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONObject;
 
@@ -103,6 +106,18 @@ public class StudentDashboardActivity extends AppCompatActivity {
         Button btnLms = findViewById(R.id.btnLms);
         btnLms.setOnClickListener(v -> {
             Intent intent = new Intent(StudentDashboardActivity.this, StudentLmsActivity.class);
+            startActivity(intent);
+        });
+
+
+// ACADMIC BUTTON
+
+        Button btnAcademics = findViewById(R.id.btnAcademics);
+
+        btnAcademics.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentDashboardActivity.this,
+                    com.campussync.erp.academics.StudentResultActivity.class);
+            intent.putExtra("role","STUDENT");
             startActivity(intent);
         });
 

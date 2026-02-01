@@ -61,6 +61,12 @@
             app:cornerRadius="12dp" />
 
         <Button
+            android:id="@+id/btnAcademics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Academics" />
+
+        <Button
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

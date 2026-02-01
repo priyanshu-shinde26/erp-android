@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- TITLE -->
+        <TextView
+            android:text="Create Test / Exam"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- TEST NAME -->
+        <EditText
+            android:id="@+id/etTestName"
+            android:hint="Test Name (e.g. Unit Test 1)"
+            android:inputType="textPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- TEST TYPE -->
+        <Spinner
+            android:id="@+id/spinnerTestType"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- MAX MARKS -->
+        <EditText
+            android:id="@+id/etMaxMarks"
+            android:hint="Maximum Marks"
+            android:inputType="number"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- EXAM DATE -->
+        <EditText
+            android:id="@+id/etExamDate"
+            android:hint="Exam Date (dd-mm-yyyy)"
+            android:focusable="false"
+            android:clickable="true"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- CREATE BUTTON -->
+        <Button
+            android:id="@+id/btnCreateTest"
+            android:text="Create Test"
+            android:layout_marginTop="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
