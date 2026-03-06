@@ -18,7 +18,7 @@ public class RetrofitClient {
     private static Retrofit retrofit;
     private static Context appContext;
 
-    private static final String BASE_URL = "http://10.0.2.2:9090/";
+    public static final String BASE_URL = "http://10.0.2.2:9090/";
 
     // 🔥 Called once from Application
     public static void init(Context context) {
@@ -36,9 +36,9 @@ public class RetrofitClient {
         if (retrofit == null) {
 
             OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(30, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(new Interceptor() {
                         @Override
                         public Response intercept(Chain chain) throws IOException {

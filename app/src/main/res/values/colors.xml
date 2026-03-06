@@ -7,7 +7,9 @@
     <color name="teal_700">#FF009688</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
+    <color name="ai_accent">#7986CB</color>
+    <color name="ai_primary">#1A237E</color>
+    <color name="ai_surface">#E8EAF6</color>
     <!-- Status Bar / App Bar -->
     <color name="primary">#FF2196F3</color>
     <color name="primary_variant">#FF1976D2</color>

@@ -112,6 +112,10 @@
         <activity android:name=".academics.ClassSubjectSelectorActivity" />
         <activity android:name=".academics.MarksEntryActivity" />
 
-
+        <!-- AI activities -->
+        <activity
+            android:name=".ai.AiChatActivity"
+            android:label="CampusSync AI"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

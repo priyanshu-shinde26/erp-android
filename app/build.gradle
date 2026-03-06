@@ -105,7 +105,7 @@ dependencies {
     implementation libs.room.runtime
     annotationProcessor libs.room.compiler
 
-
+    implementation libs.logging.interceptor.v532
 }
 configurations.configureEach {
     exclude group: "com.google.protobuf", module: "protobuf-java"

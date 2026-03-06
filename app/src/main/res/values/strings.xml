@@ -3,5 +3,8 @@
     <string name="select_class">Select Class</string>
     <string name="add_assignment">Add Assignment</string>
     <string name="no_assignments_icon">No assignments icon</string>
-
+    <string name="ai_chat_title">CampusSync AI</string>
+    <string name="ai_hint">Ask anything…</string>
+    <string name="ai_attach">Attach file</string>
+    <string name="ai_send">Send</string>
 </resources>

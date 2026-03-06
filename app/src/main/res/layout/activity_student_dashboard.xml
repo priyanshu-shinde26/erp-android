@@ -66,12 +66,28 @@
             android:layout_height="wrap_content"
             android:text="Academics" />
 
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_ai_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:text="Ask AI"
+            android:textColor="@android:color/white"
+            app:icon="@drawable/ic_ai_bot"
+            app:iconTint="@android:color/white"
+            app:backgroundTint="#1A237E"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
         <Button
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logout"
             android:layout_marginTop="16dp" />
+
+
 
     </LinearLayout>
 

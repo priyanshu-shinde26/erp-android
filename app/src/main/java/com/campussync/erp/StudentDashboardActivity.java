@@ -7,8 +7,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.campussync.erp.ai.AiChatActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import androidx.annotation.NonNull;
@@ -120,6 +120,15 @@ public class StudentDashboardActivity extends AppCompatActivity {
             intent.putExtra("role","STUDENT");
             startActivity(intent);
         });
+
+
+        // In StudentDashboardActivity.java
+        findViewById(R.id.btn_ai_chat).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AiChatActivity.class);
+            intent.putExtra("role", "student");
+            startActivity(intent);
+        });
+
 
     }
 

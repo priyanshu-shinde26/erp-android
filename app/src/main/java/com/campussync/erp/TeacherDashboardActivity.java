@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import android.widget.Toast;
-
+import com.campussync.erp.ai.AiChatActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,6 +65,13 @@ public class TeacherDashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(TeacherDashboardActivity.this,
                     com.campussync.erp.academics.AcademicDashboardActivity.class);
             intent.putExtra("role", "TEACHER");
+            startActivity(intent);
+        });
+
+
+        findViewById(R.id.btn_ai_chat).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AiChatActivity.class);
+            intent.putExtra("role", "teacher");
             startActivity(intent);
         });
 
